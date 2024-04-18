@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from './components/App';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+import { Web3ModalProvider } from './web3ModalConfig';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -15,8 +16,9 @@ if (!window.ethereum) {
 } else {
   root.render(
     <React.StrictMode>
-      <App />
+      <Web3ModalProvider>{<App />}</Web3ModalProvider>
     </React.StrictMode>
+    //<App />
   );
 }
 

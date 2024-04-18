@@ -1,15 +1,18 @@
 body {
-  background-color: #eee;
+  background-color: #2e3541;
   display: flex;
   font-family: 'Muli', sans-serif;
+  /*overflow: hidden;*/
 }
 
-.contract, .existing-contracts {
-  margin: 20px;
+.contract,
+.existing-contracts {
+  margin: 10px;
   display: inline-block;
-  padding: 40px;
-  border: 1px solid #ddd;
-  background-color: #fff;
+  padding: 20px;
+  background-color: #6b7381;
+  border-radius: 10px;
+  width: 35%;
 }
 
 h1 {
@@ -22,13 +25,18 @@ label {
   display: flex;
   flex-direction: column;
   text-transform: uppercase;
-  color: #aaa;
+  /*color: #aaa;*/
   margin: 20px;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="datetime-local"],
+.Dropdown-control {
   padding: 6px;
   font-size: 18px;
+  border-radius: 3px;
+  border: none;
+  margin-top: 5px;
 }
 
 .button {
@@ -42,29 +50,130 @@ input[type="text"] {
   font-size: 14px;
   letter-spacing: 1px;
   cursor: pointer;
+  width: -webkit-fill-available;
+}
+
+.existing-contract {
+  background-color: #eee;
+}
+
+.existing-contract .escrow-header {
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 2px solid #2e3541;
+}
+
+.escrow-header .contract-data {
+  padding-left: 10px;
 }
 
 .existing-contract ul {
   padding: 10px;
-  margin: 20px;
-  background-color: #eee;
+  margin-top: 0px;
 }
 
-.existing-contract ul > li {
+.existing-contract ul>li {
   list-style: none;
   display: flex;
   margin: 10px;
 }
 
-.existing-contract ul > li > div {
+.existing-contract ul>li>div {
   margin: 0 5px;
 }
 
-.existing-contract ul > li > :first-child {
+.existing-contract ul>li> :first-child {
   font-weight: bold;
 }
 
 .existing-contract .complete {
   color: #5aa75a;
   text-align: center;
+}
+
+.unit-container {
+  display: block;
+}
+
+.unit-container button {
+  border-radius: 5px;
+  margin-left: 25px;
+  padding: 3px;
+}
+
+.escrow-data .button-container {
+  display: flex;
+}
+
+.body {
+  display: flex;
+  position: absolute;
+  top: 10%;
+  width: -webkit-fill-available;
+  padding: 10px;
+  padding-right: 20px;
+}
+
+.main-header {
+  /*background-color: #6b7381;*/
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  right: 0%;
+  display: flex;
+  align-items: center;
+}
+
+.main-header h1 {
+  border: none;
+  padding: 15px;
+  margin-left: 10px;
+}
+
+.existing-contracts {
+  width: -webkit-fill-available;
+}
+
+h2 {
+  margin: 10px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.none-contracts {
+  text-align: center;
+  align-content: center;
+}
+
+.web3-button {
+  position: absolute;
+  right: 2%;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+#container {
+  overflow-x: auto;
+  padding-right: 5px;
+  height: 500px;
+
+}
+
+#webpack-dev-server-client-overlay {
+  display: none;
 }
