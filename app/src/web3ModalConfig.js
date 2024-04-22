@@ -1,11 +1,12 @@
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
-import { WagmiProvider } from 'wagmi';
+import { WagmiProvider, cookieStorage } from 'wagmi';
 import { arbitrum, mainnet, sepolia } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
-const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID; // Get your project ID from WalletConnect Cloud
+const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID;
+// Get your project ID from WalletConnect Cloud
 const metadata = {
   name: 'EscrowVerse',
   description: 'Create & Deploy Decentralized Escrow Contracts',
