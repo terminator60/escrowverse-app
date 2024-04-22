@@ -1,5 +1,5 @@
 app/dist
-app/artifacts/build-info
+app/artifacts
 *.dbg.json
 cache
 node_modules
