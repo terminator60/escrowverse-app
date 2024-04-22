@@ -7,7 +7,6 @@ import { useAccount } from 'wagmi';
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useClient, useWalletClient, WagmiContext } from 'wagmi'
 import { clientToProvider } from '../utils/wagmiEthersProvider';
-import { getEscrowContracts} from '../utils/getExistingContracts';
 
 function App() {
   const [escrows, setEscrows] = useState([]);
@@ -26,7 +25,7 @@ function App() {
 
   useEffect(() => {
     isConnected && walletClient && connectWallet()
-    console.log(walletClient);
+    //console.log(walletClient);
   }, [isConnected, walletClient])
 
   const connectWallet = async () => {
@@ -34,17 +33,17 @@ function App() {
     const { signer, provider } = await clientToProvider(walletClient)
     setProvider(provider);
     setSigner(signer);
-    setAccount();
-    console.log(signer);
+    const accounts = await provider.send('eth_requestAccounts', []);
+    setAccount(accounts[0]);
+    //console.log(signer);
   };
-
-  getEscrowContracts(signer, setEscrows);
 
   return (
     <>
       <div className='main-header'>
         <div className='site-name'>
-          <h1>Escrow Contract Creator</h1>
+          {/*<h1>EscrowVerse</h1>*/}
+          <img src={require('../images/Logo.png')} alt='site-logo'/>
         </div>
         <div className='web3-button'>
           <w3m-button />

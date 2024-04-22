@@ -53,7 +53,7 @@ contract EscrowERC20ToERC20 {
     function transfer() external {
         require(
             allowanceCheck(depositorTokenContract, depositor, depositorAmount),
-            "Depositor ERC20 Token is not yet approved or allowance is less!!"
+            "Depositor ERC20 Token has not yet approved or allowance is less!!"
         );
         require(
             allowanceCheck(
@@ -61,7 +61,7 @@ contract EscrowERC20ToERC20 {
                 beneficiary,
                 beneficiaryAmount
             ),
-            "Beneficiary ERC20 Token is not yet approved or allowance is less!!"
+            "Beneficiary ERC20 Token has not yet approved or allowance is less!!"
         );
         bool depositorErc20Sent = depositorTokenContract.transferFrom(
             depositor,

@@ -1,17 +1,17 @@
 import { parseEther, formatEther } from 'ethers';
-import { deployEscrow, deployEscrowERC20, deployEscrowERC20ToERC20}  from './deployEscrow';
-import { approve, approveERC20, transfer, getERC20Contract, getTokenName } from './contactInteraction';
+import { deployEscrow, deployEscrowERC20, deployEscrowERC20ToERC20 } from './deployEscrow';
+import { getTokenName } from './contactInteraction';
 import { escrowDataStringfy } from './EscrowDataStringfy';
+import { approveHandler, transferHandler, tokenApproveHandler } from './getExistingContracts';
 import axios from 'axios';
 
 export async function newContract(selectedOption, options, signer, escrows, setEscrows, account) {
     console.log("Creating Contract!!!")
-    console.log('Singer -',signer)
+    console.log('Singer -', signer)
     const beneficiary = document.getElementById('beneficiary').value;
     let escrowContract;
     if (selectedOption === options[0]) {
         const arbiter = document.getElementById('arbiter').value;
-        //const value = parseUnits(`${document.getElementById('amount').value}`, unit);
         const value = parseEther(`${document.getElementById('amount').value}`);
         escrowContract = await deployEscrow(signer, arbiter, beneficiary, value);
     } else if (selectedOption === options[1]) {
@@ -19,14 +19,14 @@ export async function newContract(selectedOption, options, signer, escrows, setE
         //const value = parseUnits(`${document.getElementById('amount').value}`, unit);
         const value = parseEther(`${document.getElementById('amount').value}`);
         const tokenAmount = parseEther(document.getElementById('token-amount').value);
-        escrowContract =  await deployEscrowERC20(signer, tokenAddress, beneficiary, value, tokenAmount);
+        escrowContract = await deployEscrowERC20(signer, tokenAddress, beneficiary, value, tokenAmount);
     } else {
         const beneficiaryTokenAddress = document.getElementById('beneficiaryERC20Address').value;
         const depositorTokenAddress = document.getElementById('depositorERC20Address').value;
         const depositorAmount = parseEther(document.getElementById('depositor-token-amount').value);
         const beneficiaryAmount = parseEther(document.getElementById('beneficiary-token-amount').value);
         console.log(beneficiary, beneficiaryTokenAddress, depositorTokenAddress, depositorAmount, beneficiaryAmount);
-        escrowContract =  await deployEscrowERC20ToERC20(signer, beneficiary, beneficiaryTokenAddress, depositorTokenAddress, depositorAmount, beneficiaryAmount);
+        escrowContract = await deployEscrowERC20ToERC20(signer, beneficiary, beneficiaryTokenAddress, depositorTokenAddress, depositorAmount, beneficiaryAmount);
     }
     console.log('Contract Deployed!!')
     console.log(escrowContract.target);
@@ -41,16 +41,7 @@ export async function newContract(selectedOption, options, signer, escrows, setE
             arbiter: arbiter,
             beneficiary: beneficiary,
             value: value.toString(),
-            handleApprove: async () => {
-                escrowContract.on('Approved', () => {
-                    document.getElementById(escrowContract.address).className =
-                        'complete';
-                    document.getElementById(escrowContract.address).innerText =
-                        "✓ It's been approved!";
-                });
-
-                await approve(escrowContract, signer);
-            },
+            handleApprove: () => {approveHandler(escrowContract.target, selectedOption, signer)},
             type: selectedOption
         };
     } else if (selectedOption === options[1]) {
@@ -65,25 +56,8 @@ export async function newContract(selectedOption, options, signer, escrows, setE
             beneficiary: beneficiary,
             beneficiaryTokenAddress: arbiter,
             beneficiaryAmount: formatEther(tokenAmount),
-            handleApprove: async () => {
-                /*escrowContract.on('Approved', () => {
-                  document.getElementById(escrowContract.address).className =
-                    'complete';
-                  document.getElementById(escrowContract.address).innerText =
-                    "✓ It's been approved!";
-                });*/
-                await approveERC20(arbiter, escrowContract.address, tokenAmount, signer);
-            },
-            handleTransfer: async () => {
-                escrowContract.on('TransferCompleted', () => {
-                    document.getElementById(escrowContract.address).className =
-                        'complete';
-                    document.getElementById(escrowContract.address).innerText =
-                        "✓ It's been transfered!";
-                });
-
-                await transfer(escrowContract, signer);
-            },
+            handleApprove: () => {tokenApproveHandler(escrowContract.target, arbiter, tokenAmount, signer, 'beneficiary')},
+            handleTransfer: () => {transferHandler(escrowContract.target, selectedOption, signer)},
             beneficiaryToken: beneficiaryTokenName,
             type: selectedOption,
         };
@@ -102,53 +76,15 @@ export async function newContract(selectedOption, options, signer, escrows, setE
             depositorTokenAddress: depositorTokenAddress,
             beneficiaryAmount: formatEther(beneficiaryAmount),
             depositorAmount: formatEther(depositorAmount),
-            handleBeneficiaryTokenApprove: async () => {
-                const erc20Contract = await getERC20Contract(beneficiaryTokenAddress, signer);
-                erc20Contract.on('Approval', (owner, spender, value) => {
-                    // console.log(owner, spender, value);
-                    // console.log(beneficiaryAmount)
-                    if (spender === escrowContract.address && value >= beneficiaryAmount) {
-                        document.getElementById(`${escrowContract.address}-beneficiary-approve`).className =
-                            'complete';
-                        document.getElementById(`${escrowContract.address}-beneficiary-approve`).innerText =
-                            "✓ Beneficiary's Token Has been Approved!";
-                    }
-                });
-                await approveERC20(beneficiaryTokenAddress, escrowContract.address, beneficiaryAmount, signer);
-            },
-            handleDepositerTokenApprove: async () => {
-                const erc20Contract = await getERC20Contract(depositorTokenAddress, signer);
-                erc20Contract.on('Approval', (owner, spender, value) => {
-                    // console.log(owner, spender, value);
-                    // console.log(depositorAmount)
-                    if (spender === escrowContract.address && value >= depositorAmount) {
-                        document.getElementById(`${escrowContract.address}-depositor-approve`).className =
-                            'complete';
-                        document.getElementById(`${escrowContract.address}-depositor-approve`).innerText =
-                            "✓ Depositor's Token Has been Approved!";
-                    }
-                });
-                await approveERC20(depositorTokenAddress, escrowContract.address, depositorAmount, signer);
-            },
-            handleTransfer: async () => {
-                escrowContract.on('TransferCompleted', (depositor, beneficiary, depositorAmount, beneficiaryAmount) => {
-                    console.log(depositor, beneficiary, depositorAmount, beneficiaryAmount)
-                    document.getElementById(escrowContract.address).className =
-                        'complete';
-                    document.getElementById(escrowContract.address).innerText =
-                        "✓ Token's has been transfered!";
-                });
-
-                await transfer(escrowContract, signer);
-            },
+            handleBeneficiaryTokenApprove: () => {tokenApproveHandler(escrowContract.target, beneficiaryTokenAddress, beneficiaryAmount, signer, 'beneficiary')},
+            handleDepositerTokenApprove: () => {tokenApproveHandler(escrowContract.target, depositorTokenAddress, depositorAmount, signer, 'depositor')},
+            handleTransfer: () => {transferHandler(escrowContract.target, selectedOption, signer)},
             type: selectedOption,
             beneficiaryToken: beneficiaryTokenName,
             depositorToken: depositorTokenName
         };
     };
     const data = escrowDataStringfy(escrow);
-    console.log(escrow);
-    console.log(data);
     const response = await axios.post('http://localhost:5000/api/escrow', data);
     console.log(response);
     setEscrows([...escrows, escrow]);

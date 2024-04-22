@@ -29,9 +29,6 @@ contract EscrowERC20 {
         depositor = msg.sender;
     }
 
-    //event ERC20Transferd(address from, address to, uint amount);
-    //event ERC20Transferd(address from, address to, uint amount);
-
     function allowanceCheck() public view returns(bool allowed) {
         uint allowanceAmount = tokenContract.allowance(beneficiary, address(this));
         return allowanceAmount >= tokenAmount;

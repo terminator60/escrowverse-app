@@ -1,24 +1,21 @@
 body {
-  background-color: #2e3541;
+  background-color: #151F35;
   display: flex;
   font-family: 'Muli', sans-serif;
-  /*overflow: hidden;*/
 }
 
 .contract,
 .existing-contracts {
   margin: 10px;
   display: inline-block;
-  padding: 20px;
-  background-color: #6b7381;
+  background-color: #2c3851;
   border-radius: 10px;
   width: 35%;
 }
 
-h1 {
-  margin: 10px;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+.site-name img {
+  padding: 20px;
+  width: 300px;
 }
 
 label {
@@ -40,37 +37,43 @@ input[type="datetime-local"],
 }
 
 .button {
-  background-color: #f58427;
+  background-color: #284384;
   color: white;
   text-align: center;
   font-weight: bold;
   text-transform: uppercase;
-  margin: 20px;
+  margin: 10px;
   padding: 9px 25px;
   font-size: 14px;
   letter-spacing: 1px;
   cursor: pointer;
   width: -webkit-fill-available;
+  max-width: 300px;
+}
+
+.contract .button {
+  margin: 20px;
 }
 
 .existing-contract {
-  background-color: #eee;
+  background-color: #ffffffa6;
+  border-radius: 10px;
 }
 
 .existing-contract .escrow-header {
-  margin-left: 15px;
+  margin: 0px 15px;
   display: flex;
   align-items: center;
   padding: 5px;
   border-bottom: 2px solid #2e3541;
 }
 
-.escrow-header .contract-data {
+.escrow-header .escrow-head-data {
   padding-left: 10px;
 }
 
 .existing-contract ul {
-  padding: 10px;
+  padding: 0px 10px 10px 15px;
   margin-top: 0px;
 }
 
@@ -105,19 +108,20 @@ input[type="datetime-local"],
 
 .escrow-data .button-container {
   display: flex;
+  justify-content: center;
 }
 
 .body {
   display: flex;
   position: absolute;
-  top: 10%;
+  top: 12%;
   width: -webkit-fill-available;
   padding: 10px;
   padding-right: 20px;
 }
 
 .main-header {
-  /*background-color: #6b7381;*/
+  background-color: #2C3C5B;
   position: absolute;
   top: 0%;
   left: 0%;
@@ -137,9 +141,7 @@ input[type="datetime-local"],
 }
 
 h2 {
-  margin: 10px;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
+  padding: 10px;
 }
 
 .none-contracts {
@@ -169,11 +171,51 @@ h2 {
 
 #container {
   overflow-x: auto;
-  padding-right: 5px;
   height: 500px;
 
 }
 
 #webpack-dev-server-client-overlay {
   display: none;
+}
+
+.contract-header,
+.existing-contracts-header {
+  background-color: #3e4a62;
+  width: -webkit-fill-available;
+  height: 60px;
+  align-items: center;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 5px 10px;
+  border-bottom: 2px solid;
+  color: white;
+  display: flex;
+}
+
+.contract-data {
+  color: white;
+}
+
+.existing-contracts-data {
+  padding: 20px;
+}
+
+.logo {
+  height: 50px;
+  width: 50px;
+}
+
+.escrow-head-data * {
+  margin: 8px 0px;
+}
+
+.existing-contract a {
+  text-decoration: unset;
+  color: unset;
+}
+
+.existing-contract a:hover {
+  text-decoration: underline;
+  color: unset;
 }

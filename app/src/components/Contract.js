@@ -16,13 +16,14 @@ function Contract() {
         return (
             <Dropdown options={options} onChange={handleDropdownChange} value={selectedOption} placeholder="Select an option" />
         );
-    }; 
+    };
 
     return (<div className="contract">
         <div className="contract-header">
+            <img src={require('../images/create-contract.webp')} className='logo' alt='create-contract' />
             <h2> New Contract </h2>
         </div>
-        <div>
+        <div className="contract-data">
             <label>
                 Escrow Type
                 <DropdownMenu />
@@ -30,12 +31,12 @@ function Contract() {
 
             {selectedOption !== options[2] && <label>
                 {selectedOption === options[0] ? 'Arbiter' : 'ERC20 Token'} Address
-                <input type="text" id="arbiter" />
+                <input type="text" id="arbiter" placeholder='0x00000......' />
             </label>}
 
             {selectedOption === options[2] && <label>
                 Depositor ERC20 Token Address
-                <input type="text" id="depositorERC20Address" />
+                <input type="text" id="depositorERC20Address" placeholder='0x00000......' />
             </label>}
 
             {selectedOption === options[2] && <label>
@@ -45,12 +46,12 @@ function Contract() {
 
             <label>
                 Beneficiary Address
-                <input type="text" id="beneficiary" />
+                <input type="text" id="beneficiary" placeholder='0x00000......' />
             </label>
 
             {selectedOption === options[2] && <label>
                 Beneficiary ERC20 Token Address
-                <input type="text" id="beneficiaryERC20Address" />
+                <input type="text" id="beneficiaryERC20Address" placeholder='0x00000......' />
             </label>}
 
             {selectedOption !== options[2] && <label>
@@ -68,14 +69,18 @@ function Contract() {
                 <input type="text" id="beneficiary-token-amount" />
             </label>}
 
-            {selectedOption === options[2] && <label>
+            {selectedOption === options[2] && false && <label>
                 Expiry Time
                 <input type="datetime-local" id="expiry-time" />
             </label>}
 
             <div className="button" id="deploy" onClick={(e) => {
                 e.preventDefault();
-                newContract(selectedOption, options, signer, escrows, setEscrows, account);
+                try {
+                    newContract(selectedOption, options, signer, escrows, setEscrows, account);
+                } catch (error) {
+                    console.log(error);
+                }
             }}
             >
                 Deploy
