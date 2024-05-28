@@ -5,6 +5,4 @@ cache
 node_modules
 artifacts
 *.bck
-.env
-app/.env
-server/.env
+*/.env
