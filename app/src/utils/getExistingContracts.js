@@ -2,12 +2,14 @@ import axios from 'axios';
 import { getERC20Contract, approveERC20, transfer, approve, getEscrowContract } from './contactInteraction';
 import { parseEther } from 'ethers';
 
-export async function getEscrowContracts(signer, setEscrows) {
+export async function getEscrowContracts(signer, setEscrows, explorer) {
   try {
-    const currentHost = window.location.hostname;
-    const response = await axios.get(`http://${currentHost}:5000/api/escrow`);
+    const escrowApiUrl = process.env.REACT_APP_ESCROW_API_URL;
+    const deafultExplorer = process.env.REACT_APP_ESCROW_DEFAULT_EXPLORER_URL;
+    const response = await axios.get(`${escrowApiUrl}/api/escrow`);
+    const blockExplorer = explorer ? explorer : deafultExplorer;
     if (response.data.length >= 0) {
-      await displayEscrows(response.data, signer, setEscrows);
+      await displayEscrows(response.data, signer, setEscrows, blockExplorer);
       return true;
     }
   } catch (error) {
@@ -16,7 +18,7 @@ export async function getEscrowContracts(signer, setEscrows) {
   }
 }
 
-async function displayEscrows(input, signer, setEscrows) {
+async function displayEscrows(input, signer, setEscrows, explorer) {
   const contracts = []
   input.forEach(data => {
     const contract = {
@@ -35,7 +37,8 @@ async function displayEscrows(input, signer, setEscrows) {
       handleTransfer: () => { transferHandler(data.address, data.type, signer) },
       type: data.type,
       beneficiaryToken: data.beneficiaryToken,
-      depositorToken: data.depositorToken
+      depositorToken: data.depositorToken,
+      blockExplorer: explorer
     }
     contracts.push(contract);
   })

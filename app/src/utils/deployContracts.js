@@ -6,8 +6,10 @@ import { approveHandler, transferHandler, tokenApproveHandler } from './getExist
 import axios from 'axios';
 
 export async function newContract(selectedOption, options, signer, escrows, setEscrows, account) {
-    console.log("Creating Contract!!!")
-    console.log('Singer -', signer)
+    if (!signer) {
+        alert('Wallet is not connected!!') 
+        return
+    };
     const beneficiary = document.getElementById('beneficiary').value;
     let escrowContract;
     if (selectedOption === options[0]) {
@@ -25,12 +27,9 @@ export async function newContract(selectedOption, options, signer, escrows, setE
         const depositorTokenAddress = document.getElementById('depositorERC20Address').value;
         const depositorAmount = parseEther(document.getElementById('depositor-token-amount').value);
         const beneficiaryAmount = parseEther(document.getElementById('beneficiary-token-amount').value);
-        console.log(beneficiary, beneficiaryTokenAddress, depositorTokenAddress, depositorAmount, beneficiaryAmount);
+        //console.log(beneficiary, beneficiaryTokenAddress, depositorTokenAddress, depositorAmount, beneficiaryAmount);
         escrowContract = await deployEscrowERC20ToERC20(signer, beneficiary, beneficiaryTokenAddress, depositorTokenAddress, depositorAmount, beneficiaryAmount);
     }
-    console.log('Contract Deployed!!')
-    console.log(escrowContract.target);
-    console.log(escrowContract);
     let escrow;
     if (selectedOption === options[0]) {
         const arbiter = document.getElementById('arbiter').value;
@@ -41,7 +40,7 @@ export async function newContract(selectedOption, options, signer, escrows, setE
             arbiter: arbiter,
             beneficiary: beneficiary,
             value: value.toString(),
-            handleApprove: () => {approveHandler(escrowContract.target, selectedOption, signer)},
+            handleApprove: () => { approveHandler(escrowContract.target, selectedOption, signer) },
             type: selectedOption
         };
     } else if (selectedOption === options[1]) {
@@ -56,8 +55,8 @@ export async function newContract(selectedOption, options, signer, escrows, setE
             beneficiary: beneficiary,
             beneficiaryTokenAddress: arbiter,
             beneficiaryAmount: formatEther(tokenAmount),
-            handleApprove: () => {tokenApproveHandler(escrowContract.target, arbiter, tokenAmount, signer, 'beneficiary')},
-            handleTransfer: () => {transferHandler(escrowContract.target, selectedOption, signer)},
+            handleApprove: () => { tokenApproveHandler(escrowContract.target, arbiter, tokenAmount, signer, 'beneficiary') },
+            handleTransfer: () => { transferHandler(escrowContract.target, selectedOption, signer) },
             beneficiaryToken: beneficiaryTokenName,
             type: selectedOption,
         };
@@ -76,16 +75,21 @@ export async function newContract(selectedOption, options, signer, escrows, setE
             depositorTokenAddress: depositorTokenAddress,
             beneficiaryAmount: formatEther(beneficiaryAmount),
             depositorAmount: formatEther(depositorAmount),
-            handleBeneficiaryTokenApprove: () => {tokenApproveHandler(escrowContract.target, beneficiaryTokenAddress, beneficiaryAmount, signer, 'beneficiary')},
-            handleDepositerTokenApprove: () => {tokenApproveHandler(escrowContract.target, depositorTokenAddress, depositorAmount, signer, 'depositor')},
-            handleTransfer: () => {transferHandler(escrowContract.target, selectedOption, signer)},
+            handleBeneficiaryTokenApprove: () => { tokenApproveHandler(escrowContract.target, beneficiaryTokenAddress, beneficiaryAmount, signer, 'beneficiary') },
+            handleDepositerTokenApprove: () => { tokenApproveHandler(escrowContract.target, depositorTokenAddress, depositorAmount, signer, 'depositor') },
+            handleTransfer: () => { transferHandler(escrowContract.target, selectedOption, signer) },
             type: selectedOption,
             beneficiaryToken: beneficiaryTokenName,
             depositorToken: depositorTokenName
         };
     };
     const data = escrowDataStringfy(escrow);
-    const response = await axios.post('http://localhost:5000/api/escrow', data);
-    console.log(response);
+    const escrowApiUrl = process.env.REACT_APP_ESCROW_API_URL;
     setEscrows([...escrows, escrow]);
+    try {
+        const res = await axios.post(`${escrowApiUrl}/api/escrow`, data);
+        console.log(res);
+    } catch (err) {
+        console.log(err);
+    }
 }

@@ -219,3 +219,63 @@ h2 {
   text-decoration: underline;
   color: unset;
 }
+
+@media only screen and (min-width: 480px) {
+  /* styles for devices with a minimum screen width of 480px */
+}
+
+@media only screen and (max-width: 480px) {
+
+  /* styles for devices with a maximum screen width of 480px */
+  .body {
+    display: block;
+    top: 17%;
+  }
+
+  .contract,
+  .existing-contracts {
+    width: -webkit-fill-available;
+  }
+
+  .existing-contracts-data {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .web3-button {
+    top: 115px;
+    right: unset;
+    left: 10%;
+    padding-bottom: 20px;
+  }
+
+  .site-name img {
+    margin-bottom: 60px;
+  }
+
+  #container {
+    overflow-x: unset;
+    height: unset;
+  }
+
+  .escrow-data .button-container {
+    display: block;
+  }
+
+  .existing-contract a {
+    text-decoration: unset;
+    color: unset;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: flow;
+    width: 200px;
+  }
+
+  .existing-contract ul a {
+    width: 250px;
+  }
+
+  .existing-contract ul>li {
+    display: block;
+  }
+}

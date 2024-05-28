@@ -6,9 +6,9 @@ import { useContext, useEffect, useRef } from 'react';
 import { getEscrowContracts } from '../utils/getExistingContracts';
 
 function ExistingContracts() {
-    const { escrows, options, signer, setEscrows } = useContext(WalletContext);
+    const { escrows, options, signer, setEscrows, explorer } = useContext(WalletContext);
     const isExistingContractUpdated = useRef(false);
-    const updatedExistingContract = async () => await getEscrowContracts(signer, setEscrows);
+    const updatedExistingContract = async () => await getEscrowContracts(signer, setEscrows, explorer);
     if (!isExistingContractUpdated.current){
         isExistingContractUpdated.current = updatedExistingContract();
     }
